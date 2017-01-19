@@ -43,6 +43,15 @@ class ProtocolHandler(object):
     def _bind_socket(self):
         pass
 
+    @abc.abstractmethod
+    def _close(self):
+        pass
+
+    def close(self):
+        self._close()
+        if self._socket:
+            self._socket.close()
+
     def send_packet(self, packet_to_send):
         self._socket.send(packet_to_send)
 

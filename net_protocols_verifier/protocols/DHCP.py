@@ -273,6 +273,5 @@ class DHCPProto(base_handler.ProtocolHandler):
             LOG.debug('DHCP message type %d not handled', dhcp_message_type)
         self._emit_results(dhcp_errors)
 
-    def close(self):
+    def _close(self):
         self._unregister_handler(dhcp.dhcp, self._handle_dhcp_packet)
-        self._socket.close()

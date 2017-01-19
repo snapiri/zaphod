@@ -38,7 +38,6 @@ class TestDHCP:
         dhcp_proto = DHCP.DHCPProto(reader)
         dhcp_proto.register_callback(self.dhcp_status_callback)
         dhcp_proto.learn = True
-        dhcp_proto.debug = True
         reader.start_reader()
         # We may send as many as we want
         for x in range(0, self.num_runs+1):
@@ -62,7 +61,6 @@ class TestDHCP:
                                     self.allowed_gateways,
                                     self.allowed_dns)
         dhcp_proto.register_callback(self.dhcp_status_callback)
-        dhcp_proto.debug = True
         reader.start_reader()
         packet = dhcp_proto.create_packet()
         dhcp_proto.send_packet(packet)

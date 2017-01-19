@@ -114,6 +114,5 @@ class ARPProto(base_handler.ProtocolHandler):
             LOG.debug('ARP opcode type %d not handled', arp_packet.opcode)
         self._emit_results(arp_errors)
 
-    def close(self):
+    def _close(self):
         self._unregister_handler(arp.arp, self._handle_arp_packet)
-        self._socket.close()

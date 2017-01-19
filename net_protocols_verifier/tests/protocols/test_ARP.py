@@ -19,7 +19,7 @@ from net_protocols_verifier.common import packet_reader
 from net_protocols_verifier.protocols import ARP
 
 
-class TestARP:
+class TestARP(object):
     IFACE_NAME = 'eth0'
     GW_ADDRESS = '10.0.0.1'
 
@@ -31,10 +31,9 @@ class TestARP:
         pass
 
     def test_learn(self):
-        print "---- Learning Usecase ----"
+        print("---- Learning Usecase ----")
         reader = packet_reader.PacketReader(self.IFACE_NAME)
         arp_proto = ARP.ARPProto(reader)
-        arp_proto.debug = True
         arp_proto.register_callback(self.arp_status_callback)
         arp_proto.learn = True
         reader.start_reader()
@@ -51,10 +50,9 @@ class TestARP:
         return True
 
     def test_static(self):
-        print "---- Static Info Usecase ----"
+        print("---- Static Info Usecase ----")
         reader = packet_reader.PacketReader(self.IFACE_NAME)
         arp_proto = ARP.ARPProto(reader, self.known_hosts)
-        arp_proto.debug = True
         arp_proto.register_callback(self.arp_status_callback)
         reader.start_reader()
         packet = arp_proto.create_packet(ip_address=self.GW_ADDRESS)
@@ -67,13 +65,13 @@ class TestARP:
     @staticmethod
     def arp_status_callback(errors):
         if not errors:
-            print 'Success!!!'
+            print('Success!!!')
         else:
-            print '**** Failed ****'
-            print '-' * 60
+            print('**** Failed ****')
+            print('-' * 60)
             for error in errors:
-                print '%s' % (error,)
-            print '-' * 60
+                print('%s' % (error,))
+            print('-' * 60)
 
 
 if __name__ == '__main__':
