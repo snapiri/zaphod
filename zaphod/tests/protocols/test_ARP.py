@@ -20,7 +20,7 @@ from zaphod.protocols import ARP
 
 
 class TestARP(object):
-    IFACE_NAME = 'eth0'
+    IFACE_NAME = 'enp60s0u1u1'
     GW_ADDRESS = '10.0.0.1'
 
     def __init__(self):
@@ -33,6 +33,9 @@ class TestARP(object):
     def test_learn(self):
         print("---- Learning Usecase ----")
         reader = packet_reader.PacketReader(self.IFACE_NAME)
+        if not reader.is_ready:
+            print('Reader is not ready')
+            return False
         arp_proto = ARP.ARPProto(reader)
         arp_proto.register_callback(self.arp_status_callback)
         arp_proto.learn = True
@@ -52,6 +55,9 @@ class TestARP(object):
     def test_static(self):
         print("---- Static Info Usecase ----")
         reader = packet_reader.PacketReader(self.IFACE_NAME)
+        if not reader.is_ready:
+            print('Reader is not ready')
+            return False
         arp_proto = ARP.ARPProto(reader, self.known_hosts)
         arp_proto.register_callback(self.arp_status_callback)
         reader.start_reader()

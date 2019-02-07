@@ -20,7 +20,7 @@ from zaphod.protocols import DHCP
 
 
 class TestDHCP:
-    IFACE_NAME = 'eth0'
+    IFACE_NAME = 'enp60s0u1u1'
 
     def __init__(self):
         self.num_runs = 1
@@ -35,6 +35,9 @@ class TestDHCP:
     def test_learn(self):
         print( "---- Learning Usecase ----")
         reader = packet_reader.PacketReader(self.IFACE_NAME)
+        if not reader.is_ready:
+            print('Reader is not ready')
+            return False
         dhcp_proto = DHCP.DHCPProto(reader)
         dhcp_proto.register_callback(self.dhcp_status_callback)
         dhcp_proto.learn = True
@@ -55,6 +58,9 @@ class TestDHCP:
     def test_static(self):
         print("---- Static Info Usecase ----")
         reader = packet_reader.PacketReader(self.IFACE_NAME)
+        if not reader.is_ready:
+            print('Reader is not ready')
+            return False
         dhcp_proto = DHCP.DHCPProto(reader,
                                     self.allowed_servers,
                                     self.allowed_dhcp_ranges,

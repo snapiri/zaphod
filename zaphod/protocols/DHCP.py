@@ -116,17 +116,16 @@ class DHCPProto(base_handler.ProtocolHandler):
 
     def _bind_socket(self):
         sock = socket_utils.create_socket('Socket', self._iface_name)
+        if not sock:
+            return None
         try:
             sock.setsockopt(socket.SOL_SOCKET,
                             socket.SO_BROADCAST, 1)
-        except socket.error as msg:
-            LOG.error('Socket error in setsockopt SO_BROADCAST : %s', msg)
-            raise
-        try:
             sock.bind((self._iface_name, DHCP_CLIENT_PORT))
         except socket.error as msg:
-            LOG.error('Socket binding failed : %s', msg)
-            raise
+            LOG.error('Socket binding failed')
+            LOG.exception(msg)
+            return None
         return sock
 
     @staticmethod

@@ -26,20 +26,13 @@ def create_socket(sock_name, iface_name):
         iface_bytes = iface_name.encode('utf-8')
         sock = socket.socket(socket.AF_PACKET, socket.SOCK_RAW,
                              socket.IPPROTO_RAW)
-    except socket.error as msg:
-        LOG.error('%s creation error : %s', sock_name, msg)
-        raise
-    try:
         sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-    except socket.error as msg:
-        LOG.error('%s error in setsockopt SO_REUSEADDR : %s', sock_name, msg)
-        raise
-
-    try:
         sock.setsockopt(socket.SOL_SOCKET, socket.SO_BINDTODEVICE, iface_bytes)
     except socket.error as msg:
-        LOG.error('%s error in setsockopt SO_REUSEADDR : %s', sock_name, msg)
-        raise
+        LOG.error('%s error initializing socket %s for iface: %s',
+                  sock_name, iface_name)
+        LOG.exception(msg)
+        return None
 
     return sock
 

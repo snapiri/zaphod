@@ -30,6 +30,11 @@ class ProtocolHandler(object):
         self._socket = self._bind_socket()
         self.learn = False
 
+    @property
+    def is_ready(self):
+        return (self._packet_reader.is_ready and self._socket and
+                self.self._iface_mac)
+
     @staticmethod
     @abc.abstractmethod
     def get_protocol_name():
@@ -73,4 +78,5 @@ class ProtocolHandler(object):
             try:
                 callback(errors)
             except Exception as e:
-                LOG.error('Exception in callback: %s', e)
+                LOG.error('Exception in callback')
+                LOG.exception(e)

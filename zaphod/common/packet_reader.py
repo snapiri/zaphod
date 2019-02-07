@@ -36,13 +36,20 @@ class PacketReader(object):
         self._orig_signal_handler = None
         self._reader_thread = None
 
+    @property
+    def is_ready(self):
+        return self._lsocket is not None
+
     def _bind_lsock(self, read_timeout):
         sock = socket_utils.create_socket('L-socket', self.iface_name)
+        if not sock:
+            return None
         try:
             sock.bind((self.iface_name, ETH_P_ALL))
         except socket.error as msg:
-            LOG.error('L-Socket binding failed : %s', msg)
-            raise
+            LOG.error('L-Socket binding failed')
+            LOG.exception(msg)
+            return None
         sock.settimeout(read_timeout)
         return sock
 
@@ -56,7 +63,8 @@ class PacketReader(object):
         try:
             packet = ryu_packet.Packet(data)
         except Exception as e:
-            LOG.error('Failed parsing packet. %s', e)
+            LOG.error('Failed parsing packet.')
+            LOG.exception(e)
             return
 
         for protocol, handlers in self._protocols.items():
@@ -66,7 +74,7 @@ class PacketReader(object):
                     try:
                         handler(packet)
                     except Exception as e:
-                        LOG.error('%s', e)
+                        LOG.exception(e)
 
     def _read_packets(self, event):
         while not event.isSet():
@@ -82,6 +90,8 @@ class PacketReader(object):
                 self._handle_packet_in(data)
 
     def start_reader(self):
+        if not self.is_ready:
+            return
         self._reader_thread = threading.Thread(target=self._read_packets,
                                                args=(self._event,))
         atexit.register(self.stop_reader)
