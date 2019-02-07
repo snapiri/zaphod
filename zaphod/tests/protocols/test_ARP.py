@@ -39,7 +39,7 @@ class TestARP(object):
         reader.start_reader()
         # We may send as many as we want
         for x in range(0, self.num_runs+1):
-            print x
+            print(x)
             packet = arp_proto.create_packet(ip_address=self.GW_ADDRESS)
             arp_proto.send_packet(packet)
             time.sleep(5)

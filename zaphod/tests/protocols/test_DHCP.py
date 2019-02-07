@@ -33,7 +33,7 @@ class TestDHCP:
         pass
 
     def test_learn(self):
-        print "---- Learning Usecase ----"
+        print( "---- Learning Usecase ----")
         reader = packet_reader.PacketReader(self.IFACE_NAME)
         dhcp_proto = DHCP.DHCPProto(reader)
         dhcp_proto.register_callback(self.dhcp_status_callback)
@@ -41,19 +41,19 @@ class TestDHCP:
         reader.start_reader()
         # We may send as many as we want
         for x in range(0, self.num_runs+1):
-            print x
+            print(x)
             packet = dhcp_proto.create_packet()
             dhcp_proto.send_packet(packet)
             time.sleep(5)
             if x == 0:
-                print "Stop learning"
+                print("Stop learning")
                 dhcp_proto.learn = False
         reader.stop_reader()
         dhcp_proto.close()
         return True
 
     def test_static(self):
-        print "---- Static Info Usecase ----"
+        print("---- Static Info Usecase ----")
         reader = packet_reader.PacketReader(self.IFACE_NAME)
         dhcp_proto = DHCP.DHCPProto(reader,
                                     self.allowed_servers,
@@ -72,13 +72,13 @@ class TestDHCP:
     @staticmethod
     def dhcp_status_callback(dhcp_errors):
         if not dhcp_errors:
-            print 'Success!!!'
+            print('Success!!!')
         else:
-            print '**** Failed ****'
-            print '-' * 60
+            print('**** Failed ****')
+            print('-' * 60)
             for error in dhcp_errors:
-                print '%s' % (error,)
-            print '-' * 60
+                print('%s' % (error,))
+            print('-' * 60)
 
 
 if __name__ == '__main__':

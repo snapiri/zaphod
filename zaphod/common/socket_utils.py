@@ -13,19 +13,17 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import fcntl
 import socket
-import struct
+
+import netifaces
 
 from zaphod.common import logger
 LOG = logger.get_logger(__name__)
 
-SIOCGIFADDR = 0x8915
-SIOCGIFHWADDR = 0x8927
-
 
 def create_socket(sock_name, iface_name):
     try:
+        iface_bytes = iface_name.encode('utf-8')
         sock = socket.socket(socket.AF_PACKET, socket.SOCK_RAW,
                              socket.IPPROTO_RAW)
     except socket.error as msg:
@@ -38,8 +36,7 @@ def create_socket(sock_name, iface_name):
         raise
 
     try:
-        sock.setsockopt(socket.SOL_SOCKET, socket.SO_BINDTODEVICE,
-                        iface_name)
+        sock.setsockopt(socket.SOL_SOCKET, socket.SO_BINDTODEVICE, iface_bytes)
     except socket.error as msg:
         LOG.error('%s error in setsockopt SO_REUSEADDR : %s', sock_name, msg)
         raise
@@ -48,14 +45,12 @@ def create_socket(sock_name, iface_name):
 
 
 def get_iface_hw_mac(iface_name):
-    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-    info = fcntl.ioctl(s.fileno(), SIOCGIFHWADDR,
-                       struct.pack('256s', iface_name[:15]))
-    return ':'.join(['%02x' % ord(char) for char in info[18:24]])
+    if iface_name not in netifaces.interfaces():
+        return None
+    return netifaces.ifaddresses(iface_name)[netifaces.AF_LINK][0]['addr']
 
 
 def get_iface_ip_address(iface_name):
-    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-    info = fcntl.ioctl(s.fileno(), SIOCGIFADDR,
-                       struct.pack('256s', iface_name[:15]))
-    return socket.inet_ntoa(info[20:24])
+    if iface_name not in netifaces.interfaces():
+        return None
+    return netifaces.ifaddresses(iface_name)[netifaces.AF_INET][0]['addr']

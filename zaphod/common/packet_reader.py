@@ -31,7 +31,6 @@ class PacketReader(object):
     def __init__(self, iface_name, read_timeout=5):
         self.iface_name = iface_name
         self._protocols = collections.defaultdict(list)
-
         self._lsocket = self._bind_lsock(read_timeout)
         self._event = threading.Event()
         self._orig_signal_handler = None
@@ -41,7 +40,7 @@ class PacketReader(object):
         sock = socket_utils.create_socket('L-socket', self.iface_name)
         try:
             sock.bind((self.iface_name, ETH_P_ALL))
-        except socket.error, msg:
+        except socket.error as msg:
             LOG.error('L-Socket binding failed : %s', msg)
             raise
         sock.settimeout(read_timeout)

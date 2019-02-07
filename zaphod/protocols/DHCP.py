@@ -52,14 +52,15 @@ class DHCPProto(base_handler.ProtocolHandler):
         self._rand.seed()
         self._xid = 0
         self.address = None
-        self.allowed_servers = map(str.lower, allowed_servers)
+        self.allowed_servers = [item
+                                for item in map(str.lower, allowed_servers)]
         self.allowed_dhcp_ranges = [netaddr.IPNetwork(net)
                                     for net in allowed_dhcp_ranges]
         self.allowed_gateways = [netaddr.IPAddress(addr)
                                  for addr in allowed_gateways]
         self.allowed_dns_servers = [netaddr.IPAddress(addr)
                                     for addr in allowed_dns_servers]
-        self.client_name = 'dhcp-tester'
+        self.client_name = b'dhcp-tester'
         self._register_handler(dhcp.dhcp, self._handle_dhcp_packet)
 
     @staticmethod
@@ -152,7 +153,7 @@ class DHCPProto(base_handler.ProtocolHandler):
     def _handle_dns_servers_opt(self, value, dhcp_errors):
         val_bytes = bytes(value)
         data_len = len(val_bytes)
-        for start in xrange(0, data_len, 4):
+        for start in range(0, data_len, 4):
             val1, = struct.unpack('!I', bytes(value)[start:start + 4])
             address = netaddr.IPAddress(val1, 4)
             LOG.debug('DNS Server: %s', address)
@@ -177,7 +178,7 @@ class DHCPProto(base_handler.ProtocolHandler):
     def _handle_static_route_opt(self, value, dhcp_errors):
         val_bytes = bytes(value)
         data_len = len(val_bytes)
-        for start in xrange(0, data_len, 8):
+        for start in range(0, data_len, 8):
             val1, val2 = struct.unpack('!II', bytes(value)[start:start + 8])
             dest = netaddr.IPAddress(val1, 4)
             gateway = netaddr.IPAddress(val2, 4)
