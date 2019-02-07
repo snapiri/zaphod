@@ -15,8 +15,8 @@
 
 import time
 
-from net_protocols_verifier.common import packet_reader
-from net_protocols_verifier.protocols import ARP
+from zaphod.common import packet_reader
+from zaphod.protocols import ARP
 
 
 class TestARP(object):

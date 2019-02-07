@@ -17,7 +17,7 @@ import fcntl
 import socket
 import struct
 
-from net_protocols_verifier.common import logger
+from zaphod.common import logger
 LOG = logger.get_logger(__name__)
 
 SIOCGIFADDR = 0x8915

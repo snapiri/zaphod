@@ -20,11 +20,11 @@ from ryu.lib.packet import ethernet, arp
 from ryu.lib.packet import packet as ryu_packet
 from ryu.ofproto import ether
 
-from net_protocols_verifier.common import protocol_errors
-from net_protocols_verifier.common import socket_utils
-from net_protocols_verifier.protocols import base_handler
+from zaphod.common import protocol_errors
+from zaphod.common import socket_utils
+from zaphod.protocols import base_handler
 
-from net_protocols_verifier.common import logger
+from zaphod.common import logger
 LOG = logger.get_logger(__name__)
 
 ETH_P_ALL = 0x0003

@@ -15,8 +15,8 @@
 
 import abc
 
-from net_protocols_verifier.common import socket_utils
-from net_protocols_verifier.common import logger
+from zaphod.common import socket_utils
+from zaphod.common import logger
 LOG = logger.get_logger(__name__)
 
 

@@ -20,8 +20,8 @@ import threading
 
 from ryu.lib.packet import packet as ryu_packet
 
-from net_protocols_verifier.common import socket_utils
-from net_protocols_verifier.common import logger
+from zaphod.common import socket_utils
+from zaphod.common import logger
 LOG = logger.get_logger(__name__)
 
 ETH_P_ALL = 0x0003

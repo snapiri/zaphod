@@ -25,10 +25,10 @@ from ryu.lib.packet import packet as ryu_packet
 from ryu.lib.packet import udp
 from ryu.ofproto import ether
 
-from net_protocols_verifier.common import socket_utils
-from net_protocols_verifier.common import protocol_errors
-from net_protocols_verifier.protocols import base_handler
-from net_protocols_verifier.common import logger
+from zaphod.common import socket_utils
+from zaphod.common import protocol_errors
+from zaphod.protocols import base_handler
+from zaphod.common import logger
 LOG = logger.get_logger(__name__)
 
 DHCP_SERVER_PORT = 67
