@@ -1,1 +1,5 @@
 .idea
+zaphod.conf
+*.pyc
+*.egg-info
+Pipfile*

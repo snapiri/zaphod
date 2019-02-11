@@ -17,62 +17,57 @@ import time
 
 from zaphod.common import packet_reader
 from zaphod.protocols import DHCP
+from zaphod.tests import config
 
 
 class TestDHCP:
-    IFACE_NAME = 'enp60s0u1u1'
 
     def __init__(self):
-        self.num_runs = 1
-        self.allowed_servers = '11:22:33:44:55:66',
-        self.allowed_dhcp_ranges = '10.0.0.0/24',
-        self.allowed_gateways = '10.0.0.1',
-        self.allowed_dns = '10.0.0.1', '8.8.8.8'
+        self.config = config.Config().get_dhcp_config()
 
-    def SetUp(self):
-        pass
+    def _single_run(self):
+        packet = self.dhcp_proto.create_packet()
+        self.dhcp_proto.send_packet(packet)
+        time.sleep(5)
 
     def test_learn(self):
         print( "---- Learning Usecase ----")
-        reader = packet_reader.PacketReader(self.IFACE_NAME)
+        reader = packet_reader.PacketReader(self.config['interface'])
         if not reader.is_ready:
             print('Reader is not ready')
             return False
-        dhcp_proto = DHCP.DHCPProto(reader)
-        dhcp_proto.register_callback(self.dhcp_status_callback)
-        dhcp_proto.learn = True
+        self.dhcp_proto = DHCP.DHCPProto(reader)
+        self.dhcp_proto.register_callback(self.dhcp_status_callback)
+        self.dhcp_proto.learn = True
         reader.start_reader()
-        # We may send as many as we want
-        for x in range(0, self.num_runs+1):
-            print(x)
-            packet = dhcp_proto.create_packet()
-            dhcp_proto.send_packet(packet)
-            time.sleep(5)
-            if x == 0:
-                print("Stop learning")
-                dhcp_proto.learn = False
+
+        # Use first packet to learn
+        self._single_run()
+        print("Stop learning")
+        self.dhcp_proto.learn = False
+        for x in range(0, self.config['runs']):
+            print("Run number %d" % (x,))
+            self._single_run()
         reader.stop_reader()
-        dhcp_proto.close()
+        self.dhcp_proto.close()
         return True
 
     def test_static(self):
         print("---- Static Info Usecase ----")
-        reader = packet_reader.PacketReader(self.IFACE_NAME)
+        reader = packet_reader.PacketReader(self.config['interface'])
         if not reader.is_ready:
             print('Reader is not ready')
             return False
-        dhcp_proto = DHCP.DHCPProto(reader,
-                                    self.allowed_servers,
-                                    self.allowed_dhcp_ranges,
-                                    self.allowed_gateways,
-                                    self.allowed_dns)
-        dhcp_proto.register_callback(self.dhcp_status_callback)
+        self.dhcp_proto = DHCP.DHCPProto(reader,
+                                         self.config['servers'],
+                                         self.config['dhcp_ranges'],
+                                         self.config['gateways'],
+                                         self.config['dns_servers'])
+        self.dhcp_proto.register_callback(self.dhcp_status_callback)
         reader.start_reader()
-        packet = dhcp_proto.create_packet()
-        dhcp_proto.send_packet(packet)
-        time.sleep(5)
+        self._single_run()
         reader.stop_reader()
-        dhcp_proto.close()
+        self.dhcp_proto.close()
         return True
 
     @staticmethod
@@ -89,6 +84,5 @@ class TestDHCP:
 
 if __name__ == '__main__':
     tester = TestDHCP()
-    tester.SetUp()
     tester.test_learn()
     tester.test_static()

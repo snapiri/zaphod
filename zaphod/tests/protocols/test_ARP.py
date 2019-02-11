@@ -17,55 +17,53 @@ import time
 
 from zaphod.common import packet_reader
 from zaphod.protocols import ARP
+from zaphod.tests import config
 
 
 class TestARP(object):
-    IFACE_NAME = 'enp60s0u1u1'
-    GW_ADDRESS = '10.0.0.1'
 
     def __init__(self):
-        self.num_runs = 1
-        self.known_hosts = {self.GW_ADDRESS: '11:22:33:44:55:66', }
+        self.config = config.Config().get_arp_config()
 
-    def SetUp(self):
-        pass
+    def _single_run(self):
+        for item in self.config['resolvers'].keys():
+            packet = self.arp_proto.create_packet(ip_address=item)
+            self.arp_proto.send_packet(packet)
+        time.sleep(5)
 
     def test_learn(self):
         print("---- Learning Usecase ----")
-        reader = packet_reader.PacketReader(self.IFACE_NAME)
+        reader = packet_reader.PacketReader(self.config['interface'])
         if not reader.is_ready:
             print('Reader is not ready')
             return False
-        arp_proto = ARP.ARPProto(reader)
-        arp_proto.register_callback(self.arp_status_callback)
-        arp_proto.learn = True
+        self.arp_proto = ARP.ARPProto(reader)
+        self.arp_proto.register_callback(self.arp_status_callback)
+        self.arp_proto.learn = True
         reader.start_reader()
-        # We may send as many as we want
-        for x in range(0, self.num_runs+1):
-            print(x)
-            packet = arp_proto.create_packet(ip_address=self.GW_ADDRESS)
-            arp_proto.send_packet(packet)
-            time.sleep(5)
-            if x == 0:
-                arp_proto.learn = False
+        # Use first packet to learn
+        self._single_run()
+        print("Stop learning")
+        self.arp_proto.learn = False
+        for x in range(0, self.config['runs']):
+            print("Run number %d" % (x,))
+            self._single_run()
         reader.stop_reader()
-        arp_proto.close()
+        self.arp_proto.close()
         return True
 
     def test_static(self):
         print("---- Static Info Usecase ----")
-        reader = packet_reader.PacketReader(self.IFACE_NAME)
+        reader = packet_reader.PacketReader(self.config['interface'])
         if not reader.is_ready:
             print('Reader is not ready')
             return False
-        arp_proto = ARP.ARPProto(reader, self.known_hosts)
-        arp_proto.register_callback(self.arp_status_callback)
+        self.arp_proto = ARP.ARPProto(reader, self.config['resolvers'])
+        self.arp_proto.register_callback(self.arp_status_callback)
         reader.start_reader()
-        packet = arp_proto.create_packet(ip_address=self.GW_ADDRESS)
-        arp_proto.send_packet(packet)
-        time.sleep(5)
+        self._single_run()
         reader.stop_reader()
-        arp_proto.close()
+        self.arp_proto.close()
         return True
 
     @staticmethod
@@ -81,8 +79,6 @@ class TestARP(object):
 
 
 if __name__ == '__main__':
-
     tester = TestARP()
-    tester.SetUp()
     tester.test_learn()
     tester.test_static()
