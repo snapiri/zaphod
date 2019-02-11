@@ -3,3 +3,4 @@ zaphod.conf
 *.pyc
 *.egg-info
 Pipfile*
+*.swp
