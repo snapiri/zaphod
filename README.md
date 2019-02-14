@@ -13,9 +13,9 @@ Each handler should inherit the `ProtocolHandler` class in the `base_handler`
   * `get_protocol_name` - returns the name of the protocol it handles
   * `create_packet` - returns a binary data of new packet (ethernet and up) 
   for the relevan protocol
-  * `_bind_socket` - binds a socket for the relevant protocol that will be 
+  * `bind_socket` - binds a socket for the relevant protocol that will be 
   used to send the packets
-  * `_close` - any resource release needed before disposal
+  * `close_resource` - any resource release needed before disposal
 
 In addition, it should use the `register_callback` method to register the 
  method to parse the received packets, and `unregister_callback` when no more

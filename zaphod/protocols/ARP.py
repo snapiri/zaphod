@@ -64,7 +64,7 @@ class ARPProto(base_handler.ProtocolHandler):
         arp_pkt.serialize()
         return arp_pkt.data
 
-    def _bind_socket(self):
+    def bind_socket(self):
         sock = socket_utils.create_socket('Socket', self._iface_name)
         if not sock:
             return None
@@ -113,5 +113,5 @@ class ARPProto(base_handler.ProtocolHandler):
             LOG.debug('ARP opcode type %d not handled', arp_packet.opcode)
         self._emit_results(arp_errors)
 
-    def _close(self):
+    def close_resource(self):
         self._unregister_handler(arp.arp, self._handle_arp_packet)

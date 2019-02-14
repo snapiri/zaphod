@@ -52,8 +52,7 @@ class DHCPProto(base_handler.ProtocolHandler):
         self._rand.seed()
         self._xid = 0
         self.address = None
-        self.allowed_servers = [item
-                                for item in map(str.lower, allowed_servers)]
+        self.allowed_servers = [item.lower() for item in allowed_servers]
         self.allowed_dhcp_ranges = [netaddr.IPNetwork(net)
                                     for net in allowed_dhcp_ranges]
         self.allowed_gateways = [netaddr.IPAddress(addr)
@@ -114,7 +113,7 @@ class DHCPProto(base_handler.ProtocolHandler):
         dhcp_pkt.serialize()
         return dhcp_pkt.data
 
-    def _bind_socket(self):
+    def bind_socket(self):
         sock = socket_utils.create_socket('Socket', self._iface_name)
         if not sock:
             return None
@@ -273,5 +272,5 @@ class DHCPProto(base_handler.ProtocolHandler):
             LOG.debug('DHCP message type %d not handled', dhcp_message_type)
         self._emit_results(dhcp_errors)
 
-    def _close(self):
+    def close_resource(self):
         self._unregister_handler(dhcp.dhcp, self._handle_dhcp_packet)

@@ -27,7 +27,7 @@ class ProtocolHandler(object):
         self._iface_name = self._packet_reader.iface_name
         self._iface_mac = socket_utils.get_iface_hw_mac(self._iface_name)
         self._callbacks = []
-        self._socket = self._bind_socket()
+        self._socket = self.bind_socket()
         self.learn = False
 
     @property
@@ -45,15 +45,15 @@ class ProtocolHandler(object):
         pass
 
     @abc.abstractmethod
-    def _bind_socket(self):
+    def bind_socket(self):
         pass
 
     @abc.abstractmethod
-    def _close(self):
+    def close_resource(self):
         pass
 
     def close(self):
-        self._close()
+        self.close_resource()
         if self._socket:
             self._socket.close()
 
