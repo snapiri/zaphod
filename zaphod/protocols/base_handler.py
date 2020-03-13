@@ -33,7 +33,7 @@ class ProtocolHandler(object):
     @property
     def is_ready(self):
         return (self._packet_reader.is_ready and self._socket and
-                self.self._iface_mac)
+                self._iface_mac)
 
     @staticmethod
     @abc.abstractmethod
