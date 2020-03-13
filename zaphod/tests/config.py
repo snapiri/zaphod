@@ -14,7 +14,6 @@
 # limitations under the License.
 
 import argparse
-import copy
 import json
 
 
@@ -29,7 +28,7 @@ class Config(object):
             self.data = json.load(json_file)
 
     def _get_component_config(self, component):
-        cfg = copy.copy(self.data['common'])
+        cfg = dict(self.data['common'])
         cfg.update(self.data.get(component, dict()))
         return cfg
 
