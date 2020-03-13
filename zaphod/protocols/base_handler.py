@@ -24,8 +24,7 @@ class ProtocolHandler(object):
     def __init__(self,
                  packet_reader):
         self._packet_reader = packet_reader
-        self._iface_name = self._packet_reader.iface_name
-        self._iface_mac = socket_utils.get_iface_hw_mac(self._iface_name)
+        self._passive_mode = passive_mode
         self._callbacks = []
         self._socket = self.bind_socket()
         self.learn = False
@@ -34,6 +33,14 @@ class ProtocolHandler(object):
     def is_ready(self):
         return (self._packet_reader.is_ready and self._socket and
                 self._iface_mac)
+
+    @property
+    def _iface_name(self):
+        return self._packet_reader.iface_name
+
+    @property
+    def _iface_mac(self):
+        return socket_utils.get_iface_hw_mac(self._iface_name)
 
     @staticmethod
     @abc.abstractmethod
