@@ -188,7 +188,8 @@ class DHCPProto(base_handler.ProtocolHandler):
 
     def _handle_dhcp_opt(self, tag, value, dhcp_errors):
         handlers = {
-            dhcp.DHCP_SERVER_IDENTIFIER_OPT: self._handle_server_identifier_opt,
+            dhcp.DHCP_SERVER_IDENTIFIER_OPT:
+                self._handle_server_identifier_opt,
             dhcp.DHCP_GATEWAY_ADDR_OPT: self._handle_gateway_address_opt,
             dhcp.DHCP_DNS_SERVER_ADDR_OPT: self._handle_dns_servers_opt,
             dhcp.DHCP_SUBNET_MASK_OPT: self._handle_subnet_mask_opt,

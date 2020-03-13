@@ -31,7 +31,7 @@ class TestDHCP:
         time.sleep(5)
 
     def test_learn(self):
-        print( "---- Learning Usecase ----")
+        print("---- Learning Usecase ----")
         reader = packet_reader.PacketReader(self.config['interface'])
         if not reader.is_ready:
             print('Reader is not ready')
