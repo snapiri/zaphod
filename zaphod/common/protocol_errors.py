@@ -23,6 +23,9 @@ class BaseError(object):
         self._module = module
         self._protocol_name = self._module.get_protocol_name()
 
+    def __repr__(self):
+        return str(self)
+
 
 class InvalidMAC(BaseError):
     def __init__(self, module, mac):
