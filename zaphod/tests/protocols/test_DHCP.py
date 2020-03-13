@@ -45,9 +45,7 @@ class TestDHCP:
         self._single_run()
         print("Stop learning")
         self.dhcp_proto.learn = False
-        for x in range(0, self.config['runs']):
-            print("Run number %d" % (x,))
-            self._single_run()
+        self._single_run()
         reader.stop_reader()
         self.dhcp_proto.close()
         return True

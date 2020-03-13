@@ -45,9 +45,7 @@ class TestARP(object):
         self._single_run()
         print("Stop learning")
         self.arp_proto.learn = False
-        for x in range(0, self.config['runs']):
-            print("Run number %d" % (x,))
-            self._single_run()
+        self._single_run()
         reader.stop_reader()
         self.arp_proto.close()
         return True

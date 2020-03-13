@@ -1,8 +1,7 @@
 {
   "common": {
     "passive": false,
-    "interface": "eth0",
-    "runs": 1
+    "interface": "eth0"
   },
   "arp": {
     "resolvers": {
