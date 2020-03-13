@@ -17,13 +17,13 @@ import time
 
 from zaphod.common import packet_reader
 from zaphod.protocols import ARP
-from zaphod.tests import config
+from zaphod.tests import cli_parser
 
 
 class TestARP(object):
 
     def __init__(self):
-        self.config = config.Config().get_arp_config()
+        self.config = cli_parser.CliParser().get_arp_config()
 
     def _single_run(self):
         for item in self.config['resolvers'].keys():

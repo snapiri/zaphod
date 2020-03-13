@@ -17,13 +17,13 @@ import time
 
 from zaphod.common import packet_reader
 from zaphod.protocols import DHCP
-from zaphod.tests import config
+from zaphod.tests import cli_parser
 
 
 class TestDHCP:
 
     def __init__(self):
-        self.config = config.Config().get_dhcp_config()
+        self.config = cli_parser.CliParser().get_dhcp_config()
 
     def _single_run(self):
         packet = self.dhcp_proto.create_packet()
