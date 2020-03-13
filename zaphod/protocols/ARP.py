@@ -28,6 +28,7 @@ from zaphod.common import logger
 LOG = logger.get_logger(__name__)
 
 ETH_P_ALL = 0x0003
+MAC_BROADCAST = "ff:ff:ff:ff:ff:ff"
 
 
 class ARPProto(base_handler.ProtocolHandler):
@@ -97,13 +98,10 @@ class ARPProto(base_handler.ProtocolHandler):
         arp_errors = []
         arp_packet = packet.get_protocol(arp.arp)
         if arp_packet.opcode == arp.ARP_REPLY:
-            if not arp_packet.dst_mac.lower() == self._iface_mac:
-                # This will usually happen when the destination is broadcast
-                arp_errors.append(
-                    protocol_errors.InvalidMAC(self.__class__,
-                                               arp_packet.dst_mac))
             answer_ip = netaddr.IPAddress(arp_packet.src_ip)
             answer_mac = arp_packet.src_mac.lower()
+            if arp_packet.dst_mac.lower() == MAC_BROADCAST:
+                LOG.debug("Got gratuitous ARP (Broadcast)")
             LOG.debug('Got MAC %s for IP %s', answer_mac, answer_ip)
             if not self._check_mac_match(answer_ip, answer_mac):
                 arp_errors.append(
