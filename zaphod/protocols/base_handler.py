@@ -22,7 +22,8 @@ LOG = logger.get_logger(__name__)
 
 class ProtocolHandler(object):
     def __init__(self,
-                 packet_reader):
+                 packet_reader,
+                 passive_mode):
         self._packet_reader = packet_reader
         self._passive_mode = passive_mode
         self._callbacks = []

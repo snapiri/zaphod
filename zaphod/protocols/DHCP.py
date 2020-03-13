@@ -43,11 +43,12 @@ class DHCPProto(base_handler.ProtocolHandler):
 
     def __init__(self,
                  packet_reader,
+                 passive_mode=False,
                  allowed_servers=(),
                  allowed_dhcp_ranges=(),
                  allowed_gateways=(),
                  allowed_dns_servers=()):
-        super(DHCPProto, self).__init__(packet_reader)
+        super(DHCPProto, self).__init__(packet_reader, passive_mode)
         self._rand = random.Random()
         self._rand.seed()
         self._xid = 0
@@ -245,7 +246,8 @@ class DHCPProto(base_handler.ProtocolHandler):
 
         LOG.debug('xid: %d', dhcp_packet.xid)
 
-        if dhcp_packet.xid != self._xid:
+        # Verify xid only on active mode
+        if not self._passive_mode and dhcp_packet.xid != self._xid:
             LOG.debug('Invalid xid (Got %d, expecting %d) - ignoring',
                       dhcp_packet.xid, self._xid)
             return

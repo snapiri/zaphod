@@ -34,8 +34,9 @@ MAC_BROADCAST = "ff:ff:ff:ff:ff:ff"
 class ARPProto(base_handler.ProtocolHandler):
     def __init__(self,
                  packet_reader,
+                 passive_mode=False,
                  known_addresses=None):
-        super(ARPProto, self).__init__(packet_reader)
+        super(ARPProto, self).__init__(packet_reader, passive_mode)
         if known_addresses:
             self.known_addresses = {netaddr.IPAddress(addr): mac.lower()
                                     for addr, mac in known_addresses.items()}

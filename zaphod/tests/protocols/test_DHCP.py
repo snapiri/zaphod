@@ -36,7 +36,7 @@ class TestDHCP:
         if not reader.is_ready:
             print('Reader is not ready')
             return False
-        self.dhcp_proto = DHCP.DHCPProto(reader)
+        self.dhcp_proto = DHCP.DHCPProto(reader, self.config.get('passive'))
         self.dhcp_proto.register_callback(self.dhcp_status_callback)
         self.dhcp_proto.learn = True
         reader.start_reader()
@@ -59,6 +59,7 @@ class TestDHCP:
             print('Reader is not ready')
             return False
         self.dhcp_proto = DHCP.DHCPProto(reader,
+                                         self.config.get('passive'),
                                          self.config['servers'],
                                          self.config['dhcp_ranges'],
                                          self.config['gateways'],

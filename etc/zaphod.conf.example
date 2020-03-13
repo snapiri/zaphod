@@ -1,5 +1,6 @@
 {
   "common": {
+    "passive": false,
     "interface": "eth0",
     "runs": 1
   },

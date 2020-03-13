@@ -37,7 +37,7 @@ class TestARP(object):
         if not reader.is_ready:
             print('Reader is not ready')
             return False
-        self.arp_proto = ARP.ARPProto(reader)
+        self.arp_proto = ARP.ARPProto(reader, self.config.get('passive'))
         self.arp_proto.register_callback(self.arp_status_callback)
         self.arp_proto.learn = True
         reader.start_reader()
@@ -58,7 +58,9 @@ class TestARP(object):
         if not reader.is_ready:
             print('Reader is not ready')
             return False
-        self.arp_proto = ARP.ARPProto(reader, self.config['resolvers'])
+        self.arp_proto = ARP.ARPProto(reader,
+                                      self.config.get('passive'),
+                                      self.config['resolvers'])
         self.arp_proto.register_callback(self.arp_status_callback)
         reader.start_reader()
         self._single_run()
