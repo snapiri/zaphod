@@ -68,6 +68,9 @@ class ProtocolHandler(object):
     def send_packet(self, packet_to_send):
         self._socket.send(packet_to_send)
 
+    def set_timeout(self, timeout):
+        self._socket.settimeout(timeout)
+
     def register_callback(self, callback):
         self._callbacks.append(callback)
 
